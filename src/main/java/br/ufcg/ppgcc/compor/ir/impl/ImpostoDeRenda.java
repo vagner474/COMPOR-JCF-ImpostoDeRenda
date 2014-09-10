@@ -89,6 +89,34 @@ public class ImpostoDeRenda implements FachadaExperimento {
 			return new ArrayList<Dependente>(dependentes.get(titular));
 		}
 		public Resultado declaracaoCompleta(Titular titular) {
-			return new Resultado();
+			double aliquota = 0,parcelaDeducao=0,impostoDevido=0;
+			Resultado resultado = new Resultado();
+			double somatorioRendimentos = 0;
+			for (FontePagadora fp : listarFontes(titular)) {
+				somatorioRendimentos += fp.getRendimentoRecebidos();
+			}
+			if(somatorioRendimentos < 19645.33){
+				aliquota = 0;
+				parcelaDeducao = 0;
+				}
+			else if (somatorioRendimentos >= 19645.33 && somatorioRendimentos <= 29442.0) {
+				aliquota = 7.5/100;
+				parcelaDeducao = 1473.4;
+			}
+			else if(somatorioRendimentos >= 29442.01 && somatorioRendimentos <= 39256.56){
+				aliquota = 15.0/100;
+				parcelaDeducao = 3681.55;
+			}
+			else if(somatorioRendimentos >= 39256.57 && somatorioRendimentos <= 49051.8){
+				aliquota = 22.5/100;
+				parcelaDeducao = 6625.79;
+			}
+			else if(somatorioRendimentos > 49051.80){
+				aliquota = 27.5/100;
+				parcelaDeducao = 9078.38;
+			}	
+			impostoDevido = (somatorioRendimentos * aliquota) - parcelaDeducao;
+			resultado.setImpostoDevido(impostoDevido);
+			return resultado;
 		}
 }
