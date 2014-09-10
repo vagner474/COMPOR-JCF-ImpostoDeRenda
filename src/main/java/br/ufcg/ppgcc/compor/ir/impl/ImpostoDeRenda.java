@@ -2,13 +2,16 @@ package br.ufcg.ppgcc.compor.ir.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import br.ufcg.ppgcc.compor.ir.FachadaExperimento;
 import br.ufcg.ppgcc.compor.ir.Titular;
 import br.ufcg.ppgcc.compor.ir.ExcecaoImpostoDeRenda;
+import br.ufcg.ppgcc.compor.ir.FontePagadora;
 
 public class ImpostoDeRenda implements FachadaExperimento {
 
-	private List<Titular> titulares = new ArrayList<Titular>();
+	private Map<Titular, List<FontePagadora>> historicoTitularFonte = new LinkedHashMap<Titular, List<FontePagadora>>();
 	
 		public void criarNovoTitular(Titular titular) {
 			if(titular.getNome() == null){
@@ -20,9 +23,22 @@ public class ImpostoDeRenda implements FachadaExperimento {
 			if (!titular.getCpf().matches("\\d{3}.\\d{3}.\\d{3}-\\d{2}")) {
 				throw new ExcecaoImpostoDeRenda("O campo CPF está inválido");
 			}
-			titulares.add(titular);
+			historicoTitularFonte.put(titular, new ArrayList<FontePagadora>());
 		}
 		public List<Titular> listarTitulares() {
-			return this.titulares;
+			return new ArrayList<Titular>(historicoTitularFonte.keySet());
+		}
+	
+		public void criarFontePagadora(Titular titular, FontePagadora fonte) {
+			if (historicoTitularFonte.containsKey(titular)) {
+				List<FontePagadora> listaDeFontesDoTitular = historicoTitularFonte.get(titular);
+		listaDeFontesDoTitular.add(fonte);
+		historicoTitularFonte.put(titular, listaDeFontesDoTitular);
+			} else {
+				throw new ExcecaoImpostoDeRenda("Titular não cadastrado");
+			}
+		}
+		public List<FontePagadora> listarFontes(Titular titular) {
+			return historicoTitularFonte.get(titular);
 		}
 }
