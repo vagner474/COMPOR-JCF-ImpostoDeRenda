@@ -14,6 +14,9 @@ public class ImpostoDeRenda implements FachadaExperimento {
 			if(titular.getNome() == null){
 				throw new ExcecaoImpostoDeRenda("O campo Nome é obrigatório");
 			}
+			if(titular.getCpf() == null){
+				throw new ExcecaoImpostoDeRenda("O campo CPF é obrigatório");
+			}
 			titulares.add(titular);	
 		}
 		public List<Titular> listarTitulares() {
