@@ -8,10 +8,12 @@ import br.ufcg.ppgcc.compor.ir.FachadaExperimento;
 import br.ufcg.ppgcc.compor.ir.Titular;
 import br.ufcg.ppgcc.compor.ir.ExcecaoImpostoDeRenda;
 import br.ufcg.ppgcc.compor.ir.FontePagadora;
+import br.ufcg.ppgcc.compor.ir.Dependente;
 
 public class ImpostoDeRenda implements FachadaExperimento {
 
 	private Map<Titular, List<FontePagadora>> historicoTitularFonte = new LinkedHashMap<Titular, List<FontePagadora>>();
+	private Map<Titular, List<Dependente>> dependentes = new LinkedHashMap<Titular, List<Dependente>>();
 	
 		public void criarNovoTitular(Titular titular) {
 			if(titular.getNome() == null){
@@ -24,6 +26,7 @@ public class ImpostoDeRenda implements FachadaExperimento {
 				throw new ExcecaoImpostoDeRenda("O campo CPF está inválido");
 			}
 			historicoTitularFonte.put(titular, new ArrayList<FontePagadora>());
+			dependentes.put(titular, new ArrayList<Dependente>());
 		}
 		public List<Titular> listarTitulares() {
 			return new ArrayList<Titular>(historicoTitularFonte.keySet());
@@ -57,5 +60,13 @@ public class ImpostoDeRenda implements FachadaExperimento {
 		}
 		public List<FontePagadora> listarFontes(Titular titular) {
 			return historicoTitularFonte.get(titular);
+		}
+		public void criarDependente(Titular titular, Dependente dependente) {
+			ArrayList<Dependente> dependentesDoTitular = (ArrayList<Dependente>) dependentes.get(titular);
+				dependentesDoTitular.add(dependente);
+				dependentes.put(titular, dependentesDoTitular);
+		}
+		public List<Dependente> listarDependentes(Titular titular) {
+			return new ArrayList<Dependente>(dependentes.get(titular));
 		}
 }
